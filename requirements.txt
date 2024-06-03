@@ -1,0 +1,8 @@
+openai
+duckduckgo-search
+beautifulsoup4
+streamlit
+python-dotenv
+load-dotenv
+urllib3
+arxiv
