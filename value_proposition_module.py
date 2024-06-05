@@ -7,7 +7,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class valuePro:
 
-    def find_values(self,company_name):
+    def find_values(self,company_name,model_choice):
         
         query_list = [f'{company_name} Company vs competitors',f'{company_name} Company competitive advantages',f'{company_name} Company market position compared to rivals']
         all_results = list()
@@ -15,7 +15,7 @@ class valuePro:
             results = DDGS().text(item, max_results=10)
             all_results.append(results)
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             messages=[
                 {"role": "system", "content": (f"""
                         You are a research assistant.

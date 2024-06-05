@@ -9,27 +9,26 @@ from competitor_analysis import companyCompetitors
 from company_news import duckduckgo_news_search
 from research_paper_finder import researcher
 
-def load_data(website_url):
-    # Data yükleme ve hesaplama, eğer website_url değiştiyse veya ilk kez çalıştırılıyorsa
+def load_data(website_url, model_choice):
     if 'website_input' not in st.session_state or st.session_state.website_input != website_url or 'data_loaded' not in st.session_state:
         st.session_state.website_input = website_url
         st.session_state.data_loaded = True  # Verilerin yüklendiğini belirt
-        st.session_state.domain_analysis = domainAnalysis().domain_rank_module(website_url)
-        st.session_state.historical_rank = domainAnalysis().historical_rank_module(website_url)
-        st.session_state.founder_description = companyFounderDescription().createDescription(website_url)
-        st.session_state.company_description = companyDescription().createDescription(website_url) # Done
-        st.session_state.social_links =social_Links().findSocialLinks(website_url)
-        st.session_state.investors = Inverstors().investors_values(website_url)
-        st.session_state.company_values = valuePro().find_values(website_url)
+        st.session_state.domain_analysis = domainAnalysis().domain_rank_module(website_url,model_choice)
+        st.session_state.historical_rank = domainAnalysis().historical_rank_module(website_url,model_choice)
+        st.session_state.founder_description = companyFounderDescription().createDescription(website_url,model_choice)
+        st.session_state.company_description = companyDescription().createDescription(website_url,model_choice) # Done
+        st.session_state.social_links = social_Links().findSocialLinks(website_url,model_choice)
+        st.session_state.investors = Inverstors().investors_values(website_url,model_choice)
+        st.session_state.company_values = valuePro().find_values(website_url,model_choice)
         st.session_state.competitors = companyCompetitors().competitorsFinder(website_url)
-        st.session_state.papers = researcher().findRelativePapers(website_url)
+        st.session_state.papers = researcher().findRelativePapers(website_url,model_choice)
 
 
 def display_data(page,website):
     # Veri gösterimi
     if page == 'Domain Analysis':
         st.subheader('Domain Analysis')
-        #st.write(st.session_state.domain_analysis['Organic Search Overview'],'\n',st.session_state.domain_analysis['Paid Search Overview'],'\n')
+        st.write(st.session_state.domain_analysis['Organic Search Overview'],'\n',st.session_state.domain_analysis['Paid Search Overview'],'\n')
 
     elif page == 'Historical Rank Analysis':
         st.subheader('Historical Rank Analysis')
@@ -50,9 +49,7 @@ def display_data(page,website):
         st.write('-'*10)
         st.subheader('Company Pricing Model')
         st.write(st.session_state.company_description['Pricing']['Company Pricing'],'\n',st.session_state.company_description['Pricing']['References'])
-        # st.write('-'*10)
-        # st.subheader('References')
-        # st.write(st.session_state.company_description['References'])
+
     elif page == "Social Media Links":
         st.subheader('Social Media Links')
         st.write(st.session_state.social_links)
@@ -72,9 +69,9 @@ def display_data(page,website):
         user_competitor = st.text_input('Please Enter Your Compotitors','')
         if st.button("Confirm Selection"):
             if user_competitor != '':
-                results = companyCompetitors().targetCompetitorAnalysis(website,user_competitor)
+                results = companyCompetitors().targetCompetitorAnalysis(website,user_competitor,st.session_state.model_choice)
             else:
-                results = companyCompetitors().targetCompetitorAnalysis(website,company)
+                results = companyCompetitors().targetCompetitorAnalysis(website,company,st.session_state.model_choice)
             st.json(results)
 
     elif page == "Company News":
@@ -102,15 +99,22 @@ def main():
 
     website_input = st.text_input("Enter the URL of the website:", st.session_state.website_input if 'website_input' in st.session_state else "")
 
+    model_choice = st.radio(
+        "Choose an AI Model:",
+        ('gpt-4o', 'gpt-3.5-turbo-0125'),
+        index=0 if 'model_choice' not in st.session_state else 1 if st.session_state.model_choice == 'gpt-3.5-turbo-0125' else 0
+    )
+    st.session_state.model_choice = model_choice
+
     if st.button("Start Analysis"):
         if website_input:
-            load_data(website_input)  # Verileri yükle
+            load_data(website_input, model_choice)  # Verileri yükle
             st.session_state.trigger_analysis = True
         else:
             st.error("Please enter a valid URL to start the analysis.")
 
     if 'trigger_analysis' in st.session_state and st.session_state.trigger_analysis:
-        display_data(selected_page,website_input)
+        display_data(selected_page, website_input)
 
 if __name__ == "__main__":
     main()

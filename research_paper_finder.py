@@ -8,11 +8,11 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class researcher:
 
-    def findRelativePapers(self,company_name):
+    def findRelativePapers(self,company_name,model_choice):
         results = DDGS().text(company_name, max_results=15)
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=model_choice,
             messages=[
                 {"role": "system", "content": ("Your task is to write a short 3-4 sentence description for the Company the user has researched. "
                                             "I want you to read and research the explanations given to you in detail."
@@ -26,7 +26,7 @@ class researcher:
         company_desc = response.choices[0].message.content
 
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             response_format={ "type": "json_object" },
             messages=[
                 {"role": "system", "content": ("You are Researcher Relevant Paper"
@@ -53,7 +53,7 @@ class researcher:
 
 
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             response_format={ "type": "json_object" },
             messages=[
                 {"role": "system", "content": ("You are expert assistant"

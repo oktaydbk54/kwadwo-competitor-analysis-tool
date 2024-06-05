@@ -8,7 +8,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class companyDescription:
 
-    def createDescription(self,company_name):
+    def createDescription(self,company_name,model_choice):
         
         # query_list = [f'{company_name} overview',f'{company_name} Features',f'{company_name} Pricing model']
         
@@ -17,7 +17,7 @@ class companyDescription:
             # search_results.append(results)
         
         response_overview = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             response_format= { 'type': "json_object" },
             messages=[
                 {"role": "system", "content": ("Your task is to write a short description for the Company the user has researched. "

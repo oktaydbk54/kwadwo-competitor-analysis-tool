@@ -7,7 +7,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class Inverstors:
 
-    def investors_values(self,company_name):
+    def investors_values(self,company_name,model_choice):
 
         query_list = [f'{company_name} Company investment history',f'{company_name} Company investors',f'{company_name} Investment Round',f'{company_name} Investment Amount']
         all_results = list()
@@ -15,7 +15,7 @@ class Inverstors:
             results = DDGS().text(item, max_results=10)
             all_results.append(results)
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             # response_format= { 'type': "json_object" },
             messages=[
                 {"role": "system", "content": ("Your job is to thoroughly read and understand the information given to you."

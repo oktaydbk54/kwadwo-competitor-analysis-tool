@@ -10,7 +10,7 @@ client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class domainAnalysis:
 
-    def domain_rank_module(self,company_name):
+    def domain_rank_module(self,company_name,model_choice):
         client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
         post_data = dict()
         post_data[len(post_data)] = dict(
@@ -25,7 +25,7 @@ class domainAnalysis:
             This endpoint will provide you with ranking and traffic data from organic and paid search for the specified domain. You will be able to review the domain ranking distribution in SERPs as well as estimated monthly traffic volume for both organic and paid results."""
 
             response = client_openai.chat.completions.create(
-                model="gpt-4o",
+                model=model_choice,
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": (""" 
@@ -48,7 +48,7 @@ class domainAnalysis:
         else:
             return None
     
-    def historical_rank_module(self,company_name):
+    def historical_rank_module(self,company_name,model_choice):
         client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
         post_data = dict()
         post_data[len(post_data)] = dict(
@@ -64,7 +64,7 @@ class domainAnalysis:
             This endpoint will provide you with historical data on rankings and traffic of the specified domain, such as domain ranking distribution in SERPs and estimated monthly traffic volume for both organic and paid results."""
 
             response = client_openai.chat.completions.create(
-                model="gpt-4o",
+                model=model_choice,
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": (""" 

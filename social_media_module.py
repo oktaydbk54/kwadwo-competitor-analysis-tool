@@ -7,13 +7,13 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 class social_Links:
 
-    def findSocialLinks(self,company_name):
+    def findSocialLinks(self,company_name,model_choice):
 
         query = f"{company_name} Social Media Links"
         results = DDGS().text(query, max_results=20)
 
         response = client.chat.completions.create(
-        model="gpt-4o",
+        model=model_choice,
         messages=[
             {"role": "system", "content": ("""
                     You are an expert Social media link finder.

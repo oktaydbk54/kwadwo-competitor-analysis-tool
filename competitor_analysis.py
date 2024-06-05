@@ -13,7 +13,7 @@ class companyCompetitors:
         client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
         post_data = dict()
         post_data[len(post_data)] = dict(
-            target="pleo.io",
+            target=company_name,
             location_name="United States",
             language_name="English",
             exclude_top_domains=True,
@@ -22,38 +22,26 @@ class companyCompetitors:
         )
         response = client.post("/v3/dataforseo_labs/google/competitors_domain/live", post_data)
         if response["status_code"] == 20000:
-            domain_links = []
+            try:
+                domain_links = []
 
-            for task in response['tasks']:
-                for item in task['result'][0]['items']:
-                    domain_links.append(item['domain'])
+                for task in response['tasks']:
+                    for item in task['result'][0]['items']:
+                        domain_links.append(item['domain'])
 
-            return {'Competitor':domain_links}
+                return {'Competitor':domain_links}
+            except:
+                return {'Competitor':[]}
         else:
             return {'Competitor':[]}
-            # print("error. Code: %d Message: %s" % (response["status_code"], response["status_message"]))
-        # results = DDGS().text(f"{company_name} Alternatives, Competitors", max_results=20)
-        # response = client.chat.completions.create(
-        #     model="gpt-4o",
-        #     response_format={ "type": "json_object" },
-        #     messages=[
-        #         {"role": "system", "content": ("You are assistant"
-        #                                     "Your task find competitors"
-        #                                     "Response in JSON format"
-        #                                     "Provide your answer in JSON structure like this {'Competitor':['List Of Competitors']}")},
-        #         {"role":"assistant","content": f"Here is all Google Company Search Results: {results}"},
-        #         {"role": "user", "content": f"Based on the google search I want you to find competitors of {company_name} company and give me a list"},    
-        #     ]
-        #     )
-        # res = json.loads(response.choices[0].message.content)
-        # return res
+            
 
-    def targetCompetitorAnalysis(self,company_name,target_company):
+    def targetCompetitorAnalysis(self,company_name,target_company,model_choice):
         results = DDGS().text(f"Which company is better {company_name} or {target_company}", max_results=30)
 
 
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=model_choice,
             response_format={ "type": "json_object" },
             messages=[
                 {"role": "system", "content": ("You are assistant"
