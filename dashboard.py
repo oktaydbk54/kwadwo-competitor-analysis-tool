@@ -17,8 +17,8 @@ def load_data(website_url):
         st.session_state.domain_analysis = domainAnalysis().domain_rank_module(website_url)
         st.session_state.historical_rank = domainAnalysis().historical_rank_module(website_url)
         st.session_state.founder_description = companyFounderDescription().createDescription(website_url)
-        st.session_state.company_description = companyDescription().createDescription(website_url)
-        st.session_state.social_links = social_Links().findSocialLinks(website_url)
+        st.session_state.company_description = companyDescription().createDescription(website_url) # Done
+        st.session_state.social_links =social_Links().findSocialLinks(website_url)
         st.session_state.investors = Inverstors().investors_values(website_url)
         st.session_state.company_values = valuePro().find_values(website_url)
         st.session_state.competitors = companyCompetitors().competitorsFinder(website_url)
@@ -29,7 +29,7 @@ def display_data(page,website):
     # Veri gösterimi
     if page == 'Domain Analysis':
         st.subheader('Domain Analysis')
-        st.write(st.session_state.domain_analysis['Domain Analysis'])
+        #st.write(st.session_state.domain_analysis['Organic Search Overview'],'\n',st.session_state.domain_analysis['Paid Search Overview'],'\n')
 
     elif page == 'Historical Rank Analysis':
         st.subheader('Historical Rank Analysis')
@@ -41,8 +41,18 @@ def display_data(page,website):
 
     elif page == "Company Description":
         st.subheader("Company Description")
-        st.write(st.session_state.company_description)
-    
+        st.write('-'*10)
+        st.subheader('Company Overview')
+        st.write(st.session_state.company_description['Overview']['Company Overview'],'\n',st.session_state.company_description['Overview']['References'])
+        st.write('-'*10)
+        st.subheader('Company Features')
+        st.write(st.session_state.company_description['Features']['Company Features'],'\n',st.session_state.company_description['Features']['References'])
+        st.write('-'*10)
+        st.subheader('Company Pricing Model')
+        st.write(st.session_state.company_description['Pricing']['Company Pricing'],'\n',st.session_state.company_description['Pricing']['References'])
+        # st.write('-'*10)
+        # st.subheader('References')
+        # st.write(st.session_state.company_description['References'])
     elif page == "Social Media Links":
         st.subheader('Social Media Links')
         st.write(st.session_state.social_links)

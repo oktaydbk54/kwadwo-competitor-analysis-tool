@@ -2,6 +2,7 @@ from duckduckgo_search import DDGS
 from openai import OpenAI
 import json
 import os
+from client import RestClient
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -9,21 +10,43 @@ class companyCompetitors:
 
     def competitorsFinder(self,company_name):
 
-        results = DDGS().text(f"{company_name} Alternatives, Competitors", max_results=20)
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            response_format={ "type": "json_object" },
-            messages=[
-                {"role": "system", "content": ("You are assistant"
-                                            "Your task find competitors"
-                                            "Response in JSON format"
-                                            "Provide your answer in JSON structure like this {'Competitor':['List Of Competitors']}")},
-                {"role":"assistant","content": f"Here is all Google Company Search Results: {results}"},
-                {"role": "user", "content": f"Based on the google search I want you to find competitors of {company_name} company and give me a list"},    
-            ]
-            )
-        res = json.loads(response.choices[0].message.content)
-        return res
+        client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
+        post_data = dict()
+        post_data[len(post_data)] = dict(
+            target="pleo.io",
+            location_name="United States",
+            language_name="English",
+            exclude_top_domains=True,
+ #!!!!           # ["keyword_data.keyword", "not_like", "%seo%"]  #not_like= ["youtube"]!!!!!
+            limit=10
+        )
+        response = client.post("/v3/dataforseo_labs/google/competitors_domain/live", post_data)
+        if response["status_code"] == 20000:
+            domain_links = []
+
+            for task in response['tasks']:
+                for item in task['result'][0]['items']:
+                    domain_links.append(item['domain'])
+
+            return {'Competitor':domain_links}
+        else:
+            return {'Competitor':[]}
+            # print("error. Code: %d Message: %s" % (response["status_code"], response["status_message"]))
+        # results = DDGS().text(f"{company_name} Alternatives, Competitors", max_results=20)
+        # response = client.chat.completions.create(
+        #     model="gpt-4o",
+        #     response_format={ "type": "json_object" },
+        #     messages=[
+        #         {"role": "system", "content": ("You are assistant"
+        #                                     "Your task find competitors"
+        #                                     "Response in JSON format"
+        #                                     "Provide your answer in JSON structure like this {'Competitor':['List Of Competitors']}")},
+        #         {"role":"assistant","content": f"Here is all Google Company Search Results: {results}"},
+        #         {"role": "user", "content": f"Based on the google search I want you to find competitors of {company_name} company and give me a list"},    
+        #     ]
+        #     )
+        # res = json.loads(response.choices[0].message.content)
+        # return res
 
     def targetCompetitorAnalysis(self,company_name,target_company):
         results = DDGS().text(f"Which company is better {company_name} or {target_company}", max_results=30)

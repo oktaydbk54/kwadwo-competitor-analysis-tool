@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import json
 from client import RestClient
 import os
-
+load_dotenv()
 client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 
@@ -30,20 +30,16 @@ class domainAnalysis:
                 messages=[
                     {"role": "system", "content": (""" 
                         You are an SEO expert. Your task is to interpret the JSON responses from SEO sites I use and report them to a client in a simple and understandable way.
-
                         Instructions:
                         1. Write a comment to the user in a clear and understandable manner.
                         2. Take your time to ensure accuracy in interpreting all values.
                         3. Create a report-style summary of the analysis results, focusing on Organic Search Overview and Paid Search Overview.
-                        4. Perform a comprehensive domain analysis using the provided JSON file.
+                        4. Perform a comprehensive domain analysisq using the provided JSON file.
                         5. Your response should be in JSON format.
-
-                        Ensure your response adheres to this format:
-                        {
-                            "Domain Analysis": "<Your Analysis Report>"
-                        }""")},
-                    {"role":"assistant","content": f"Here is Endpoint description: {endpoint_desc}, Here is JSON response: {response}"},
-                    {"role": "user", "content": "I want you to perform a Domain Analysis for me by looking at the JSON file given to you."},
+                        Provide your answer in JSON structure like this {"Organic Search Overview":"Analysis Result"},{"Paid Search Overview":"Analysis Result"},{"Summary":"Summary"}
+                        """)},
+                    {"role":"assistant","content": f"Here is JSON response: {response}"},
+                    {"role": "user", "content": "I would like you to examine the Json information given to you and give me brief information about the company data."},
                     
                 ]
             )
