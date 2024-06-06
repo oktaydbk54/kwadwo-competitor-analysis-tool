@@ -22,6 +22,7 @@ class Inverstors:
                                             "In general, you only have to provide information about the investment the company received. You cannot touch on other topics."
                                             "Your job is to thoroughly evaluate the internet results and then compile a report for me using all the information related to the company's investment."
                                             "You should always choose an easily understandable language."
+                                            "Your task is to add the reference links at the end after creating the report. You should not complete any reporting without adding and you can never deviate from this rule. never ever"
         #                                     "You should response in JSON format"
         # "Provide your answer in JSON structure like this {'Investors':'<Investors you found>','Description':'<Description you found>','References':'<References you found>'}"
         )},

@@ -36,6 +36,8 @@ class domainAnalysis:
                         3. Create a report-style summary of the analysis results, focusing on Organic Search Overview and Paid Search Overview.
                         4. Perform a comprehensive domain analysisq using the provided JSON file.
                         5. Your response should be in JSON format.
+                        You need to perform a domain analysis in a way that is understandable to the customer, using the JSON information given to you. You have to plan all the steps and execute them correctly. Never rush and you have to report in the correct format.
+                        Your task is to return the response in the sample JSON format given to you. You can never, ever return a response in any other format.
                         Provide your answer in JSON structure like this {"Organic Search Overview":"Analysis Result"},{"Paid Search Overview":"Analysis Result"},{"Summary":"Summary"}
                         """)},
                     {"role":"assistant","content": f"Here is JSON response: {response}"},
@@ -72,9 +74,11 @@ class domainAnalysis:
                         Your task is to interpret the JSON responses coming from some SEO sites I use as a source and I want you to report them to a client in a simple and understandable way.
                         You have to write a comment to the user in a simple and understandable way.
                         You should never rush during this process.
+                        Your task is to add the reference links at the end after creating the report. You should not complete any reporting without adding and you can never deviate from this rule. never ever
                         When reviewing your JSON response, you need to evaluate it in detail and make sure.
                         JSON contains the user's past rank overview information. Using this information you have to write an informative report to the user.
-                        You have to understand and interpret all the values ​​​​well.
+                        You need to perform a domain analysis in a way that is understandable to the customer, using the JSON information given to you. You have to plan all the steps and execute them correctly. Never rush and you have to report in the correct format.
+                                                   You have to understand and interpret all the values ​​​​well.
                         You should response in JSON format
                         Provide Json format like this {"Historical Overview": "<Your Analysis Report>"}   """)},
                     {"role":"assistant","content": f"Here is Endpoint description: {endpoint_desc}, Here is JSON response: {response}"},

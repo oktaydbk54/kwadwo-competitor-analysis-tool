@@ -17,7 +17,9 @@ class companyCompetitors:
             location_name="United States",
             language_name="English",
             exclude_top_domains=True,
- #!!!!           # ["keyword_data.keyword", "not_like", "%seo%"]  #not_like= ["youtube"]!!!!!
+            filters = [
+        ["domain","not_regex","(tiktok.com|stackoverflow.com|go.dev|jetbrains.com|github.com|indeed.com|microsoft.com|apple.com|forbes.com|pinterest.com|amazon.com|google.com|facebook.com|wordpress.com|medium.com|quora.com|reddit.com|youtube.com|ebay.com|uol.com.br|instagram.com|twitter.com|linkedin.com|slideshare.net)"]
+    ],
             limit=10
         )
         response = client.post("/v3/dataforseo_labs/google/competitors_domain/live", post_data)
@@ -38,8 +40,6 @@ class companyCompetitors:
 
     def targetCompetitorAnalysis(self,company_name,target_company,model_choice):
         results = DDGS().text(f"Which company is better {company_name} or {target_company}", max_results=30)
-
-
         response = client.chat.completions.create(
             model=model_choice,
             response_format={ "type": "json_object" },

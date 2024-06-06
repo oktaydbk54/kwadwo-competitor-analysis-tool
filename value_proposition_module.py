@@ -23,6 +23,8 @@ class valuePro:
                         After reviewing all the information, you need to list these aspects to the user why this company should be preferred.
                         The only purpose of what you print is to explain to the customer why this company should be preferred.
                         Your task is to point out the differences between company {company_name} and other companies and explain why company {company_name} is better.
+                        "Your task is to add the reference links at the end after creating the report. You should not complete any reporting without adding and you can never deviate from this rule. never ever"
+
                         You need to use simple language that the user can understand.""")},
                 {"role":"assistant","content": f"Here is all Search Results: {all_results}"},
                 {"role": "user", "content": f"As a result of the information given to you, I want you to give me all advantages about company"},

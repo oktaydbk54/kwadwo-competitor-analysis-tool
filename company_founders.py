@@ -22,6 +22,7 @@ class companyFounderDescription:
                                         "You have to give me as much information about the founders of the company as you can find in the given information, in order."
                                         "You should always choose an easily understandable language."
                                         "You must always leave a reference link at the end of the report you write. "
+                                        f"Your job is to do research on company {company_name}. You should never, ever use or write any information other than company {company_name}. You can never, ever exceed this rule."
                                         f"You should create a report using information about company {company_name}. If you see a name or information outside Company {company_name}, you are advised to ignore it and never add it."
                                         "You only have to provide information about the founders of the company being investigated, you cannot touch on anything else.")},
             {"role":"assistant","content": f"Here is all Google {company_name} Founders Search Results: {all_results}"},
