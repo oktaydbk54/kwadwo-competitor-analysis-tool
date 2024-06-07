@@ -20,7 +20,7 @@ def load_data(website_url, model_choice):
         st.session_state.social_links = social_Links().findSocialLinks(website_url,model_choice)
         st.session_state.investors = Inverstors().investors_values(website_url,model_choice)
         st.session_state.company_values = valuePro().find_values(website_url,model_choice)
-        st.session_state.competitors = companyCompetitors().competitorsFinder(website_url)
+        
         st.session_state.papers = researcher().findRelativePapers(website_url,model_choice)
 
 
@@ -64,7 +64,9 @@ def display_data(page,website):
     
     elif page == "Competitor Analysis":
         st.subheader('Company Competitors')
-        st.write(st.session_state.competitors)
+        #st.write(st.session_state.competitors)
+        source = st.selectbox("Choose Source:",('DataforSEO','Exa'))
+        st.session_state.competitors = companyCompetitors().competitorsFinder(website,source)
         company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
         user_competitor = st.text_input('Please Enter Your Compotitors','')
         if st.button("Confirm Selection"):

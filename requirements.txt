@@ -6,3 +6,4 @@ python-dotenv
 load-dotenv
 urllib3
 arxiv
+exa-py
