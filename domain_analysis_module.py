@@ -57,13 +57,31 @@ class domainAnalysis:
             target=company_name,
             location_name="United States",
             language_name="English",
+            filters=[
+                # ["keyword_data.keyword_info.search_volume", ">", 10],
+                # "and",
+                ["keyword_data.keyword_info.competition_level", ">", "LOW"]
+                
+            ],
+            limit=10
         )
-        response = client.post("/v3/dataforseo_labs/google/historical_rank_overview/live", post_data)
+        response = client.post("/v3/dataforseo_labs/google/ranked_keywords/live", post_data)
         if response["status_code"] == 20000:
+    # Extract the keywords and their details
+            keywords_info = []
+            items = response["tasks"][0]["result"][0]["items"]
+            for item in items:
+                keyword_data = item.get('keyword_data', {})
+                keyword = keyword_data.get('keyword', 'N/A')
+                keyword_info = keyword_data.get('keyword_info', {})
+                keywords_info.append({
+                    'keyword': keyword,
+                    'info': keyword_info
+                })
             
-            endpoint_desc = """
-            Historical Rank Overview
-            This endpoint will provide you with historical data on rankings and traffic of the specified domain, such as domain ranking distribution in SERPs and estimated monthly traffic volume for both organic and paid results."""
+            # endpoint_desc = """
+            # Historical Rank Overview
+            # This endpoint will provide you with historical data on rankings and traffic of the specified domain, such as domain ranking distribution in SERPs and estimated monthly traffic volume for both organic and paid results."""
 
             response = client_openai.chat.completions.create(
                 model=model_choice,
@@ -74,6 +92,7 @@ class domainAnalysis:
                         Your task is to interpret the JSON responses coming from some SEO sites I use as a source and I want you to report them to a client in a simple and understandable way.
                         You have to write a comment to the user in a simple and understandable way.
                         You should never rush during this process.
+                        I also want you to print the words in the keyword variable that come with the first 10 as keywords.
                         Your task is to add the reference links at the end after creating the report. You should not complete any reporting without adding and you can never deviate from this rule. never ever
                         When reviewing your JSON response, you need to evaluate it in detail and make sure.
                         JSON contains the user's past rank overview information. Using this information you have to write an informative report to the user.
@@ -81,7 +100,7 @@ class domainAnalysis:
                                                    You have to understand and interpret all the values ​​​​well.
                         You should response in JSON format
                         Provide Json format like this {"Historical Overview": "<Your Analysis Report>"}   """)},
-                    {"role":"assistant","content": f"Here is Endpoint description: {endpoint_desc}, Here is JSON response: {response}"},
+                    {"role":"assistant","content": f"Here is JSON response: {keywords_info}"},
                     {"role": "user", "content": "I want you to perform a historical rank overview analysis for me by looking at the JSON file given to you."},
                     
                 ]

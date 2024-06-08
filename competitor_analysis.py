@@ -9,34 +9,39 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 exa = Exa(api_key="5ff4f2f8-e37e-4902-9c3c-0c77eaeb7327")
 class companyCompetitors:
 
-    def competitorsFinder(self,company_name,source):
-        if source == 'DataforSEO':
-            client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
-            post_data = dict()
-            post_data[len(post_data)] = dict(
-                target=company_name,
-                location_name="United States",
-                language_name="English",
-                exclude_top_domains=True,
-                filters = [
-                ["domain","not_regex","(tiktok.com|stackoverflow.com|go.dev|jetbrains.com|github.com|indeed.com|microsoft.com|apple.com|forbes.com|pinterest.com|amazon.com|google.com|facebook.com|wordpress.com|medium.com|quora.com|reddit.com|youtube.com|ebay.com|uol.com.br|instagram.com|twitter.com|linkedin.com|slideshare.net)"]],
-                    limit=10
-                )
-            response = client.post("/v3/dataforseo_labs/google/competitors_domain/live", post_data)
-            if response["status_code"] == 20000:
-                try:
-                    domain_links = []
+    def competitorsFinder(self,company_name,source,model_choice):
+        if source == 'ChatGPT':
+            try:
+                query_list = [f'{company_name} competitors',f'{company_name} alternatives']
+                all_results = list()
+                for item in query_list:    
+                    results = DDGS().text(item, max_results=7)
+                    all_results.append(results)
 
-                    for task in response['tasks']:
-                        for item in task['result'][0]['items']:
-                            domain_links.append(item['domain'])
-
-                    return {'Competitor':domain_links}
-                except:
-                    return {'Competitor':[]}
-            else:
-                return {'Competitor':[]}
-        elif source == 'Exa':
+                    response = client.chat.completions.create(
+                        model=model_choice,
+                        response_format={ "type": "json_object" },
+                        messages=[
+                            {"role": "system", "content": ("Your task is to identify competing companies and respond as json."
+                                                        "You need to thoroughly examine and analyze the data given to you."
+                                                    f"It is your job to find competing companies' sites for company {company_name}."
+                                                        "All you have to do is to write down the sites of all your rival companies in a list after making the necessary analysis and review."
+                                                        "You only need to return the links of rival companies. You are expected to return the links of the rival companies you find in the descriptions in the body section."
+                                                        "I want you to examine the explanations given to you and get the links of the competing companies you find there. You should not return a link with an extension from another site."
+                                                        "You only need to return competitor company links to the user. You cannot return any other data."
+                                                        "You can never go beyond the above rules."
+                                                        "Response in JSON format"
+                                "Provide your answer in JSON structure like this {'Competitor': ['<Company Link>','<Company Link>'...]")},
+                            {"role":"assistant","content": f"Here is all Google Company Search Results: {all_results}"},
+                            {"role": "user", "content": f"I want you to give me links to competing companies for company {company_name}."},
+                            
+                        ]
+                        )
+                res = json.loads(response.choices[0].message.content)
+                return res
+            except:
+                return [{'Competitor':[]}]
+        if source == 'Exa':
             try:
                 domain_links = list()
                 result = exa.find_similar(
@@ -48,7 +53,7 @@ class companyCompetitors:
                     domain_links.append(item.url)
                 return {'Competitor':domain_links}
             except:
-                return {'Competitor':[]}
+                return [{'Competitor':[]}]
 
     def targetCompetitorAnalysis(self,company_name,target_company,model_choice):
         results = DDGS().text(f"Which company is better {company_name} or {target_company}", max_results=30)

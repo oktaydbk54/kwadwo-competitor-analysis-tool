@@ -64,17 +64,23 @@ def display_data(page,website):
     
     elif page == "Competitor Analysis":
         st.subheader('Company Competitors')
-        #st.write(st.session_state.competitors)
-        source = st.selectbox("Choose Source:",('DataforSEO','Exa'))
-        st.session_state.competitors = companyCompetitors().competitorsFinder(website,source)
-        company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
-        user_competitor = st.text_input('Please Enter Your Compotitors','')
-        if st.button("Confirm Selection"):
-            if user_competitor != '':
-                results = companyCompetitors().targetCompetitorAnalysis(website,user_competitor,st.session_state.model_choice)
-            else:
-                results = companyCompetitors().targetCompetitorAnalysis(website,company,st.session_state.model_choice)
-            st.json(results)
+        source = st.selectbox("Choose Source:", ('ChatGPT', 'Exa'))
+        if source == 'Exa':
+            if st.button("Search"):
+                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
+                if 'competitors' in st.session_state:
+                    company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
+                    if st.button("Confirm Selection"):
+                        results = companyCompetitors().targetCompetitorAnalysis(website, company, st.session_state.model_choice)
+                        st.json(results)
+        elif source == 'ChatGPT':
+            if st.button("Search"):
+                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
+                if 'competitors' in st.session_state:
+                    company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
+                    if st.button("Confirm Selection"):
+                        results = companyCompetitors().targetCompetitorAnalysis(website, company, st.session_state.model_choice)
+                        st.json(results)
 
     elif page == "Company News":
         st.subheader('Company News')
