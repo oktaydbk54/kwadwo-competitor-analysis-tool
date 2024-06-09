@@ -69,17 +69,17 @@ def display_data(page,website):
             if st.button("Search"):
                 st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
                 if 'competitors' in st.session_state:
-                    company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
+                    st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
                     if st.button("Confirm Selection"):
-                        results = companyCompetitors().targetCompetitorAnalysis(website, company, st.session_state.model_choice)
+                        results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
                         st.json(results)
         elif source == 'ChatGPT':
             if st.button("Search"):
                 st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
                 if 'competitors' in st.session_state:
-                    company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
+                    st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
                     if st.button("Confirm Selection"):
-                        results = companyCompetitors().targetCompetitorAnalysis(website, company, st.session_state.model_choice)
+                        results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
                         st.json(results)
 
     elif page == "Company News":

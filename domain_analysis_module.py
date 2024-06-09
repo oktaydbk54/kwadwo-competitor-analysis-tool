@@ -53,6 +53,8 @@ class domainAnalysis:
     def historical_rank_module(self,company_name,model_choice):
         client = RestClient("kwadwo.adu@plyolab.com", "b13fca3dc310b90f")
         post_data = dict()
+        if company_name.startswith('www.'):
+            company_name = company_name.replace('www.','')
         post_data[len(post_data)] = dict(
             target=company_name,
             location_name="United States",
@@ -68,16 +70,20 @@ class domainAnalysis:
         response = client.post("/v3/dataforseo_labs/google/ranked_keywords/live", post_data)
         if response["status_code"] == 20000:
     # Extract the keywords and their details
-            keywords_info = []
-            items = response["tasks"][0]["result"][0]["items"]
-            for item in items:
-                keyword_data = item.get('keyword_data', {})
-                keyword = keyword_data.get('keyword', 'N/A')
-                keyword_info = keyword_data.get('keyword_info', {})
-                keywords_info.append({
-                    'keyword': keyword,
-                    'info': keyword_info
-                })
+            try:
+                keywords_info = []
+                items = response["tasks"][0]["result"][0]["items"]
+                print('Items:',items)
+                for item in items:
+                    keyword_data = item.get('keyword_data', {})
+                    keyword = keyword_data.get('keyword', 'N/A')
+                    keyword_info = keyword_data.get('keyword_info', {})
+                    keywords_info.append({
+                        'keyword': keyword,
+                        'info': keyword_info
+                    })
+            except:
+                keyword_info = response
             
             # endpoint_desc = """
             # Historical Rank Overview
