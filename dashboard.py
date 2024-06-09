@@ -72,7 +72,8 @@ def display_data(page, website):
                     st.session_state.selected_company = None  # Reset the selected company
                     st.session_state.results = None  # Reset the results
                 except Exception as e:
-                    st.error(f"Error fetching competitors: {e}")
+                    pass
+                    #st.error(f"Error fetching competitors: {e}")
 
         elif source == 'ChatGPT':
             if st.button("Search"):
@@ -97,7 +98,8 @@ def display_data(page, website):
             try:
                 st.json(st.session_state.results)
             except json.JSONDecodeError as e:
-                st.error(f"Error displaying results: {e}")
+                pass
+                #st.error(f"Error displaying results: {e}")
 
     elif page == "Company News":
         st.subheader('Company News')
