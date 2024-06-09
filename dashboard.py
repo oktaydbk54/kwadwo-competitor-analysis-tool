@@ -20,11 +20,9 @@ def load_data(website_url, model_choice):
         st.session_state.social_links = social_Links().findSocialLinks(website_url,model_choice)
         st.session_state.investors = Inverstors().investors_values(website_url,model_choice)
         st.session_state.company_values = valuePro().find_values(website_url,model_choice)
-        
         st.session_state.papers = researcher().findRelativePapers(website_url,model_choice)
 
-
-def display_data(page,website):
+def display_data(page, website):
     # Veri gösterimi
     if page == 'Domain Analysis':
         st.subheader('Domain Analysis')
@@ -67,20 +65,22 @@ def display_data(page,website):
         source = st.selectbox("Choose Source:", ('ChatGPT', 'Exa'))
         if source == 'Exa':
             if st.button("Search"):
-                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
+                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
                 if 'competitors' in st.session_state:
                     st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
                     if st.button("Confirm Selection"):
                         st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
-            st.json(st.session_state.results)
+                if 'results' in st.session_state:
+                    st.json(st.session_state.results)
         elif source == 'ChatGPT':
             if st.button("Search"):
-                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source,st.session_state.model_choice)
+                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
                 if 'competitors' in st.session_state:
                     st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
                     if st.button("Confirm Selection"):
                         st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
-            st.json(st.session_state.results)
+                if 'results' in st.session_state:
+                    st.json(st.session_state.results)
 
     elif page == "Company News":
         st.subheader('Company News')
@@ -96,7 +96,6 @@ def display_data(page,website):
     elif page == "Research Papers":
         st.subheader('Research Papers')
         st.json(st.session_state.papers)
-
 
 def main():
     st.title("Website Analysis Tool")
