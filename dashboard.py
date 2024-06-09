@@ -8,25 +8,26 @@ from value_proposition_module import valuePro
 from competitor_analysis import companyCompetitors
 from company_news import duckduckgo_news_search
 from research_paper_finder import researcher
+import json
 
 def load_data(website_url, model_choice):
     if 'website_input' not in st.session_state or st.session_state.website_input != website_url or 'data_loaded' not in st.session_state:
         st.session_state.website_input = website_url
         st.session_state.data_loaded = True  # Verilerin yüklendiğini belirt
-        st.session_state.domain_analysis = domainAnalysis().domain_rank_module(website_url,model_choice)
-        st.session_state.historical_rank = domainAnalysis().historical_rank_module(website_url,model_choice)
-        st.session_state.founder_description = companyFounderDescription().createDescription(website_url,model_choice)
-        st.session_state.company_description = companyDescription().createDescription(website_url,model_choice) # Done
-        st.session_state.social_links = social_Links().findSocialLinks(website_url,model_choice)
-        st.session_state.investors = Inverstors().investors_values(website_url,model_choice)
-        st.session_state.company_values = valuePro().find_values(website_url,model_choice)
-        st.session_state.papers = researcher().findRelativePapers(website_url,model_choice)
+        st.session_state.domain_analysis = domainAnalysis().domain_rank_module(website_url, model_choice)
+        st.session_state.historical_rank = domainAnalysis().historical_rank_module(website_url, model_choice)
+        st.session_state.founder_description = companyFounderDescription().createDescription(website_url, model_choice)
+        st.session_state.company_description = companyDescription().createDescription(website_url, model_choice)  # Done
+        st.session_state.social_links = social_Links().findSocialLinks(website_url, model_choice)
+        st.session_state.investors = Inverstors().investors_values(website_url, model_choice)
+        st.session_state.company_values = valuePro().find_values(website_url, model_choice)
+        st.session_state.papers = researcher().findRelativePapers(website_url, model_choice)
 
 def display_data(page, website):
     # Veri gösterimi
     if page == 'Domain Analysis':
         st.subheader('Domain Analysis')
-        st.write(st.session_state.domain_analysis['Organic Search Overview'],'\n',st.session_state.domain_analysis['Paid Search Overview'],'\n')
+        st.write(st.session_state.domain_analysis['Organic Search Overview'], '\n', st.session_state.domain_analysis['Paid Search Overview'], '\n')
 
     elif page == 'Historical Rank Analysis':
         st.subheader('Historical Rank Analysis')
@@ -38,20 +39,20 @@ def display_data(page, website):
 
     elif page == "Company Description":
         st.subheader("Company Description")
-        st.write('-'*10)
+        st.write('-' * 10)
         st.subheader('Company Overview')
-        st.write(st.session_state.company_description['Overview']['Company Overview'],'\n',st.session_state.company_description['Overview']['References'])
-        st.write('-'*10)
+        st.write(st.session_state.company_description['Overview']['Company Overview'], '\n', st.session_state.company_description['Overview']['References'])
+        st.write('-' * 10)
         st.subheader('Company Features')
-        st.write(st.session_state.company_description['Features']['Company Features'],'\n',st.session_state.company_description['Features']['References'])
-        st.write('-'*10)
+        st.write(st.session_state.company_description['Features']['Company Features'], '\n', st.session_state.company_description['Features']['References'])
+        st.write('-' * 10)
         st.subheader('Company Pricing Model')
-        st.write(st.session_state.company_description['Pricing']['Company Pricing'],'\n',st.session_state.company_description['Pricing']['References'])
+        st.write(st.session_state.company_description['Pricing']['Company Pricing'], '\n', st.session_state.company_description['Pricing']['References'])
 
     elif page == "Social Media Links":
         st.subheader('Social Media Links')
         st.write(st.session_state.social_links)
-    
+
     elif page == "Investors":
         st.subheader("Investors")
         st.write(st.session_state.investors)
@@ -59,30 +60,42 @@ def display_data(page, website):
     elif page == "Company Advantages":
         st.subheader('Value Propositions')
         st.write(st.session_state.company_values)
-    
+
     elif page == "Competitor Analysis":
         st.subheader('Company Competitors')
         source = st.selectbox("Choose Source:", ('ChatGPT', 'Exa'))
 
         if source == 'Exa':
             if st.button("Search"):
-                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
-                st.session_state.selected_company = None  # Reset the selected company
-                st.session_state.results = None  # Reset the results
+                try:
+                    st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
+                    st.session_state.selected_company = None  # Reset the selected company
+                    st.session_state.results = None  # Reset the results
+                except Exception as e:
+                    st.error(f"Error fetching competitors: {e}")
 
         elif source == 'ChatGPT':
             if st.button("Search"):
-                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
-                st.session_state.selected_company = None  # Reset the selected company
-                st.session_state.results = None  # Reset the results
+                try:
+                    st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
+                    st.session_state.selected_company = None  # Reset the selected company
+                    st.session_state.results = None  # Reset the results
+                except Exception as e:
+                    st.error(f"Error fetching competitors: {e}")
 
         if 'competitors' in st.session_state:
             st.session_state.selected_company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
             if st.button("Confirm Selection"):
-                st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.selected_company, st.session_state.model_choice)
-                
+                try:
+                    st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.selected_company, st.session_state.model_choice)
+                except Exception as e:
+                    st.error(f"Error fetching competitor analysis: {e}")
+
         if 'results' in st.session_state:
-            st.json(st.session_state.results)
+            try:
+                st.json(st.session_state.results)
+            except json.JSONDecodeError as e:
+                st.error(f"Error displaying results: {e}")
 
     elif page == "Company News":
         st.subheader('Company News')
@@ -94,7 +107,7 @@ def display_data(page, website):
             st.write(news['body'])
             st.markdown(f"**Source:** {news['source']}")
             st.markdown("---")
-    
+
     elif page == "Research Papers":
         st.subheader('Research Papers')
         st.json(st.session_state.papers)
@@ -102,7 +115,7 @@ def display_data(page, website):
 def main():
     st.title("Website Analysis Tool")
 
-    page_options = ['Domain Analysis', 'Historical Rank Analysis', "Company Description", "Company Founders", "Social Media Links", "Investors","Company Advantages",'Competitor Analysis','Company News',"Research Papers"]
+    page_options = ['Domain Analysis', 'Historical Rank Analysis', "Company Description", "Company Founders", "Social Media Links", "Investors", "Company Advantages", 'Competitor Analysis', 'Company News', "Research Papers"]
     selected_page = st.sidebar.radio("Select Analysis Page:", page_options, index=page_options.index(st.session_state.selected_page if 'selected_page' in st.session_state else 'Domain Analysis'))
     st.session_state.selected_page = selected_page
 
