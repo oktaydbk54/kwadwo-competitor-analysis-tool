@@ -63,24 +63,26 @@ def display_data(page, website):
     elif page == "Competitor Analysis":
         st.subheader('Company Competitors')
         source = st.selectbox("Choose Source:", ('ChatGPT', 'Exa'))
+
         if source == 'Exa':
             if st.button("Search"):
                 st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
-                if 'competitors' in st.session_state:
-                    st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
-                    if st.button("Confirm Selection"):
-                        st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
-                if 'results' in st.session_state:
-                    st.json(st.session_state.results)
+                st.session_state.selected_company = None  # Reset the selected company
+                st.session_state.results = None  # Reset the results
+
         elif source == 'ChatGPT':
             if st.button("Search"):
                 st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
-                if 'competitors' in st.session_state:
-                    st.session_state.company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
-                    if st.button("Confirm Selection"):
-                        st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.company, st.session_state.model_choice)
-                if 'results' in st.session_state:
-                    st.json(st.session_state.results)
+                st.session_state.selected_company = None  # Reset the selected company
+                st.session_state.results = None  # Reset the results
+
+        if 'competitors' in st.session_state:
+            st.session_state.selected_company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
+            if st.button("Confirm Selection"):
+                st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.selected_company, st.session_state.model_choice)
+                
+        if 'results' in st.session_state:
+            st.json(st.session_state.results)
 
     elif page == "Company News":
         st.subheader('Company News')
