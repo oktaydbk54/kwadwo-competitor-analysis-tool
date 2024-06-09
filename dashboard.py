@@ -81,7 +81,8 @@ def display_data(page, website):
                     st.session_state.selected_company = None  # Reset the selected company
                     st.session_state.results = None  # Reset the results
                 except Exception as e:
-                    st.error(f"Error fetching competitors: {e}")
+                    pass
+                    #st.error(f"Error fetching competitors: {e}")
 
         if 'competitors' in st.session_state:
             st.session_state.selected_company = st.selectbox("Choose a company from the list:", st.session_state.competitors['Competitor'])
@@ -89,7 +90,8 @@ def display_data(page, website):
                 try:
                     st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.selected_company, st.session_state.model_choice)
                 except Exception as e:
-                    st.error(f"Error fetching competitor analysis: {e}")
+                    pass
+                    #st.error(f"Error fetching competitor analysis: {e}")
 
         if 'results' in st.session_state:
             try:
