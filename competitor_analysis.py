@@ -28,6 +28,8 @@ class companyCompetitors:
                                                         "All you have to do is to write down the sites of all your rival companies in a list after making the necessary analysis and review."
                                                         "You only need to return the links of rival companies. You are expected to return the links of the rival companies you find in the descriptions in the body section."
                                                         "I want you to examine the explanations given to you and get the links of the competing companies you find there. You should not return a link with an extension from another site."
+                                                        "Your task is only to return the links of the competing companies you find. You cannot return the name of a rival company within the extension of another site. For example: Google.com company's competitor website link is apple.com."
+                                                        "The rival company you find cannot be an extension of another website. Do not exceed this rule. apple.com = correct/ cnbc.com/apple.com = wrong format."
                                                         "You only need to return competitor company links to the user. You cannot return any other data."
                                                         "You can never go beyond the above rules."
                                                         "Response in JSON format"
