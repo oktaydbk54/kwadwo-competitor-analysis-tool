@@ -66,33 +66,30 @@ def display_data(page, website):
 
     elif page == "Competitor Analysis":
         st.subheader('Company Competitors')
-        source = st.selectbox("Choose Source:", ('ChatGPT', 'Exa'))
-        if st.button("Search"):
-            try:
-                st.session_state.competitors = companyCompetitors().competitorsFinder(website, source, st.session_state.model_choice)
-                st.session_state.selected_company = None
-                st.session_state.results = None
-            except Exception as e:
-                st.error(f"Error fetching competitors: {e}")
+        try:
+            st.session_state.competitors = companyCompetitors().competitorsFinder(website, 'ChatGPT', st.session_state.model_choice)
+            st.session_state.selected_company = None
+            st.session_state.results = None
+        except Exception as e:
+            st.error(f"Error fetching competitors: {e}")
 
-        if 'competitors' in st.session_state:
-            st.session_state.selected_company = st.selectbox("Choose a company from the list:", st.session_state.competitors.get('Competitor', []))
-            if st.button("Confirm Selection"):
-                try:
-                    st.session_state.results = companyCompetitors().targetCompetitorAnalysis(website, st.session_state.selected_company, st.session_state.model_choice)
-                except Exception as e:
-                    st.error(f"Error fetching competitor analysis: {e}")
-
-        if 'results' in st.session_state:
-            try:
-                st.write(st.session_state.results)
-            except json.JSONDecodeError as e:
-                st.error(f"Error displaying results: {e}")
+        if 'competitors' in st.session_state and st.session_state.competitors:
+            st.write("Competitors List:")
+            competitors_list = st.session_state.competitors.get('Competitor', [])
+            for competitor in competitors_list:
+                st.write(competitor)
 
     elif page == "Company News":
         st.subheader('Company News')
         try:
-            search_news_dict = duckduckgo_news_search(website)
+            # Haberler henüz yüklenmemişse yükle
+            if 'search_news_dict' not in st.session_state:
+                st.session_state.search_news_dict = duckduckgo_news_search(website)
+            
+            # Haberleri listele
+            search_news_dict = st.session_state.search_news_dict
+            if not search_news_dict:
+                st.write("No news found.")
             for news in search_news_dict:
                 if news.get('image'):
                     st.image(news['image'], width=100)

@@ -3,7 +3,7 @@ from duckduckgo_search import DDGS
 
 # Haber arama fonksiyonu
 def duckduckgo_news_search(query):
-    results = DDGS().news(keywords='"'+query+'"', region="wt-wt", safesearch="off", timelimit="m", max_results=10)
+    results = DDGS().news(keywords='"'+query+'"'+'news', region="wt-wt", max_results=10)
     return results
 
 def display_news_results(results):
